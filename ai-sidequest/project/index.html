@@ -44,7 +44,7 @@
   function closeChat() { panel.hidden = true; toggle.setAttribute('aria-expanded','false'); toggle.focus(); }
   toggle.onclick = () => panel.hidden ? openChat() : closeChat();
   $('sq-close').onclick = closeChat;
-  panel.addEventListener('keydown', e => { if(e.key === 'Escape' && location.pathname !== '/bot') closeChat(); });
+  panel.addEventListener('keydown', e => { if(e.key === 'Escape' && !document.body.classList.contains('sq-full')) closeChat(); });
   document.querySelectorAll('[data-prompt]').forEach(button => button.onclick = () => {openChat(); input.value = button.dataset.prompt;});
   if(location.pathname === '/bot' || new URLSearchParams(location.search).get('view') === 'bot') {document.body.classList.add('sq-full'); openChat();}
   if(preview) $('sq-mode').textContent = 'STATIC PREVIEW · canned response, no AI call';
