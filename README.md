@@ -31,6 +31,6 @@ The click counter lives only in your browser and resets when the page reloads. T
 
 ## Next project: OpenRouter chatbot
 
-[Open the Would You Rather workshop guide](ai-would-you-rather/README.md) or try `ai-would-you-rather/index.html` in a browser. The new section includes a six-slide, 20-minute workshop, a floating chat widget, a full-page bot layout, and a dependency-free Node.js backend using OpenRouter's NVIDIA Nemotron 3 Ultra free model.
+[Open the Would You Rather workshop](ai-would-you-rather/README.md). Participants edit `ai-would-you-rather/index.html` directly on GitHub, commit their changes, and refresh the published page. The six-slide workshop uses no terminal, installation, or backend.
 
-The public static preview returns a clearly labeled fixed example. For real AI responses, run the files in `ai-would-you-rather/project` locally and put your own key in a private `.env` file. Existing static hosting settings stay the same. A public live AI service would require a separate backend deployment.
+Each visitor can enter their own OpenRouter key on the live page. The key stays only in page memory and clears on refresh; never put a key in the GitHub code. Try demo works without a key. Existing static hosting settings stay the same.

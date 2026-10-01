@@ -2,18 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Would You Rather? · Preview</title>
-<script>globalThis.GAME_PREVIEW = true;</script>
+<title>Would You Rather? · AI Club</title>
 <style>
-  *{box-sizing:border-box}body{margin:0;background:#f8faf8;color:#142d32;font:18px/1.55 Arial,sans-serif}main{max-width:1050px;margin:auto;padding:55px 28px 170px}.brand{font-weight:700;color:#087e80;letter-spacing:2px;font-size:15px}h1{font-size:clamp(46px,7vw,84px);line-height:1.05;max-width:800px;letter-spacing:-3px;margin:75px 0 28px}h1 em{font-style:normal;color:#087e80}.intro{max-width:530px;color:#536b70;font-size:21px}.ideas{display:flex;flex-wrap:wrap;gap:12px;margin-top:38px}.ideas button{border:1px solid #b7d1cb;background:white;border-radius:8px;padding:13px 18px;color:#142d32;font:inherit;cursor:pointer}.footnote{margin-top:65px;color:#536b70;font-size:15px;max-width:560px}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #c17b24;outline-offset:3px}
+  /* EDIT 1: change the accent color. */
+  :root{--accent:#087e80}
+  *{box-sizing:border-box}body{margin:0;background:#f8faf8;color:#142d32;font:18px/1.55 Arial,sans-serif}main{max-width:1050px;margin:auto;padding:55px 28px 170px}.brand{font-weight:700;color:var(--accent);letter-spacing:2px;font-size:15px}h1{font-size:clamp(46px,7vw,84px);line-height:1.05;max-width:800px;letter-spacing:-3px;margin:75px 0 28px}h1 em{font-style:normal;color:var(--accent)}.intro{max-width:530px;color:#536b70;font-size:21px}.ideas{display:flex;flex-wrap:wrap;gap:12px;margin-top:38px}.ideas button{border:1px solid #b7d1cb;background:white;border-radius:8px;padding:13px 18px;color:#142d32;font:inherit;cursor:pointer}.footnote{margin-top:65px;color:#536b70;font-size:15px;max-width:560px}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #c17b24;outline-offset:3px}
 </style>
 <!-- BOT CSS START: copy this style block to your existing page's head -->
 <style>
-  #sq-toggle{position:fixed;right:24px;bottom:24px;z-index:1000;border:0;border-radius:99px;padding:18px 25px;background:#087e80;color:white;font:bold 17px Arial;box-shadow:0 6px 30px #142d3230;cursor:pointer}
+  #sq-toggle{position:fixed;right:24px;bottom:24px;z-index:1000;border:0;border-radius:99px;padding:18px 25px;background:var(--accent);color:white;font:bold 17px Arial;box-shadow:0 6px 30px #142d3230;cursor:pointer}
   #sq-panel{position:fixed;right:24px;bottom:94px;z-index:1000;width:390px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 116px);background:white;color:#142d32;border:1px solid #d2e2dc;border-radius:18px;box-shadow:0 12px 60px #142d3220;overflow:auto;font:16px/1.45 Arial,sans-serif}
   #sq-panel[hidden]{display:none}#sq-panel header{padding:20px 22px;background:#142d32;color:white;display:flex;align-items:center;justify-content:space-between}#sq-panel h2{font-size:21px;margin:0}#sq-close{background:none;color:white;border:0;font-size:25px;cursor:pointer}#sq-mode{font-size:12px;color:#96e3cb;margin-top:4px}
-  #sq-log{padding:18px 20px;max-height:280px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}.sq-message{margin:0 0 15px;padding-bottom:15px;border-bottom:1px solid #e6efec}.sq-message strong{display:block;font-size:12px;letter-spacing:1px;color:#087e80;margin-bottom:6px}#sq-form{padding:0 20px 18px}#sq-form label{display:block;font-size:13px;margin-bottom:6px}#sq-input{box-sizing:border-box;width:100%;font:16px Arial;padding:12px;border:1px solid #9bbab1;border-radius:7px}#sq-send{margin-top:10px;width:100%;background:#087e80;color:white;border:0;border-radius:7px;padding:12px;font:bold 15px Arial;cursor:pointer}#sq-send:disabled{opacity:.6;cursor:wait}#sq-status{font-size:13px;color:#536b70;min-height:20px;margin:10px 0 0}#sq-privacy{font-size:11px;padding:0 20px 16px;color:#536b70;margin:0}
-  @media(max-width:500px){#sq-panel{right:16px;bottom:87px}#sq-toggle{right:16px;bottom:16px}#sq-log{max-height:210px}}
+  #sq-connection{padding:14px 20px;border-bottom:1px solid #d2e2dc}#sq-connection label{font-size:13px;display:block;margin-bottom:5px}#sq-key{box-sizing:border-box;width:100%;padding:9px;font:14px Arial;border:1px solid #9bbab1;border-radius:6px}.sq-key-actions{display:flex;gap:8px;margin:8px 0}#sq-connection button{font:13px Arial;padding:7px 10px;border:1px solid #b7d1cb;border-radius:6px;background:#f8faf8;color:#142d32;cursor:pointer}#sq-key-note{font-size:11px;margin:5px 0 0;color:#536b70}
+  #sq-log{padding:18px 20px;max-height:210px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}.sq-message{margin:0 0 15px;padding-bottom:15px;border-bottom:1px solid #e6efec}.sq-message strong{display:block;font-size:12px;letter-spacing:1px;color:var(--accent);margin-bottom:6px}#sq-form{padding:0 20px 18px}#sq-form label{display:block;font-size:13px;margin-bottom:6px}#sq-input{box-sizing:border-box;width:100%;font:16px Arial;padding:12px;border:1px solid #9bbab1;border-radius:7px}#sq-send{margin-top:10px;width:100%;background:var(--accent);color:white;border:0;border-radius:7px;padding:12px;font:bold 15px Arial;cursor:pointer}#sq-send:disabled{opacity:.6;cursor:wait}#sq-status{font-size:13px;color:#536b70;min-height:20px;margin:10px 0 0}#sq-privacy{font-size:11px;padding:0 20px 16px;color:#536b70;margin:0}
+  @media(max-width:500px){#sq-panel{right:16px;bottom:87px}#sq-toggle{right:16px;bottom:16px}#sq-log{max-height:170px}}
   body.sq-full main,body.sq-full #sq-toggle{display:none}body.sq-full #sq-panel{position:relative;right:auto;bottom:auto;margin:40px auto;width:650px;max-height:none}body.sq-full #sq-log{max-height:50vh}body.sq-full #sq-close{display:none}
 </style>
 <!-- BOT CSS END -->
@@ -21,35 +23,76 @@
 <body>
 <main>
   <div class="brand">AI CLUB / MINI PROJECT</div>
+  <!-- EDIT 2: change the title below. -->
   <h1>Would you<br><em>rather…?</em></h1>
   <p class="intro">Pick a theme. Get two ridiculous choices. Defend your answer.</p>
   <div class="ideas"><button data-prompt="Give me a funny would-you-rather question about superpowers.">Superpowers</button><button data-prompt="Give me a funny would-you-rather question about campus life.">Campus life</button></div>
-  <p class="footnote">Fixed demo question. Live mode generates one for your theme.<br><a href="?view=bot">Full-page game</a> · <a href="slides/Would-You-Rather-Workshop.pptx">Workshop slides</a> · <a href="../">Back</a></p>
+  <p class="footnote">Use your own OpenRouter key to generate questions, or try the demo.<br><a href="?view=bot">Full-page game</a> · <a href="slides/Would-You-Rather-Workshop.pptx">Workshop slides</a> · <a href="../">Back</a></p>
 </main>
 <!-- BOT HTML START: copy this block just before your existing page's closing body tag -->
 <button id="sq-toggle" aria-controls="sq-panel" aria-expanded="false">✦ Give me a dilemma</button>
 <section id="sq-panel" aria-labelledby="sq-title" hidden>
-  <header><div><h2 id="sq-title">Would You Rather?</h2><div id="sq-mode">Checking mode…</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
+  <header><div><h2 id="sq-title">Would You Rather?</h2><div id="sq-mode">Connect your key or try demo</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
+  <form id="sq-connection" autocomplete="off">
+    <label for="sq-key">Your OpenRouter key</label>
+    <input id="sq-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your own key here">
+    <div class="sq-key-actions"><button type="submit">Use my key</button><button type="button" id="sq-clear">Clear key</button><button type="button" id="sq-demo">Try demo</button></div>
+    <p id="sq-key-note">Only in this tab's memory. Refresh clears it. Never put a key in GitHub code.</p>
+  </form>
   <div id="sq-log" role="log" aria-live="polite"><div class="sq-message"><strong>GAME BOT</strong>Give me a theme, like superpowers, food, or campus life. I will give you two choices.</div></div>
   <form id="sq-form"><label for="sq-input">Your message</label><input id="sq-input" maxlength="1000" required autocomplete="off" placeholder="Try a theme: food, space, college…"><button id="sq-send">Send</button><p id="sq-status" role="status"></p></form>
-  <p id="sq-privacy">Live mode sends your message to OpenRouter and NVIDIA. Use fictional or non-sensitive inputs. Check AI suggestions before acting.</p>
+  <p id="sq-privacy">Your key goes only to OpenRouter. Your theme goes to OpenRouter and NVIDIA. Use non-sensitive inputs.</p>
 </section>
 <!-- BOT HTML END -->
 <!-- BOT SCRIPT START: copy this script after the bot HTML -->
 <script>
 (() => {
-  const preview = globalThis.GAME_PREVIEW === true;
+  // EDIT 3: change these instructions, then commit your change on GitHub.
+  const INSTRUCTIONS = `Create a playful would-you-rather question using the user's theme.
+Write exactly two funny, balanced choices labeled A and B.
+End with: Which would you pick, and why?
+Keep it under 70 words, friendly, and suitable for a club meeting.`;
+
+  const MODEL = 'nvidia/nemotron-3-ultra-550b-a55b:free';
+  const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+  // Each visitor enters their own key in the page. Never add a real key here.
+  let apiKey = '';
+  let mode = 'none';
+  let activeRequest = null;
   const $ = id => document.getElementById(id);
   const panel = $('sq-panel'), toggle = $('sq-toggle'), input = $('sq-input');
+  const fullPage = new URLSearchParams(location.search).get('view') === 'bot';
+
   function openChat() { panel.hidden = false; toggle.setAttribute('aria-expanded','true'); input.focus(); }
   function closeChat() { panel.hidden = true; toggle.setAttribute('aria-expanded','false'); toggle.focus(); }
   toggle.onclick = () => panel.hidden ? openChat() : closeChat();
   $('sq-close').onclick = closeChat;
-  panel.addEventListener('keydown', e => { if(e.key === 'Escape' && !document.body.classList.contains('sq-full')) closeChat(); });
+  panel.addEventListener('keydown', e => { if(e.key === 'Escape' && !fullPage) closeChat(); });
   document.querySelectorAll('[data-prompt]').forEach(button => button.onclick = () => {openChat(); input.value = button.dataset.prompt;});
-  if(location.pathname === '/bot' || new URLSearchParams(location.search).get('view') === 'bot') {document.body.classList.add('sq-full'); openChat();}
-  if(preview) $('sq-mode').textContent = 'STATIC PREVIEW · canned response, no AI call';
-  else fetch('/api/config').then(r => { if(!r.ok) throw Error(); return r.json(); }).then(c => {$('sq-mode').textContent = c.demo ? 'DEMO MODE · canned response, no AI call' : 'LIVE MODE · OpenRouter';}).catch(() => {$('sq-mode').textContent = 'Start server.mjs and use its local URL';});
+  if(fullPage) {document.body.classList.add('sq-full'); openChat();}
+
+  function resetConnection(nextMode) {
+    activeRequest?.abort();
+    apiKey = '';
+    $('sq-key').value = '';
+    mode = nextMode;
+    $('sq-mode').textContent = mode === 'demo' ? 'DEMO · fixed example, no AI request' : 'Connect your key or try demo';
+  }
+  $('sq-connection').onsubmit = e => {
+    e.preventDefault();
+    const entered = $('sq-key').value.trim();
+    if(!entered) { $('sq-status').textContent = 'Paste your own OpenRouter key first.'; return; }
+    resetConnection('live');
+    apiKey = entered;
+    $('sq-mode').textContent = 'LIVE · key ready for your next request';
+    $('sq-status').textContent = 'Enter a theme and press Send.';
+    input.focus();
+  };
+  $('sq-clear').onclick = () => {resetConnection('none'); $('sq-status').textContent = 'Key cleared from this page.';};
+  $('sq-demo').onclick = () => {resetConnection('demo'); $('sq-status').textContent = 'Send any theme to see a fixed example.';};
+  // No browser storage, cookies, or analytics. Also clear on page departure.
+  window.addEventListener('pagehide', () => resetConnection('none'));
+
   function addMessage(label, content) {
     const line = document.createElement('div'); line.className = 'sq-message';
     const name = document.createElement('strong'); name.textContent = label;
@@ -57,28 +100,58 @@
     $('sq-log').scrollTop = $('sq-log').scrollHeight;
   }
   $('sq-form').onsubmit = async e => {
-    e.preventDefault(); const message = input.value.trim(); if(!message) return;
-    $('sq-send').disabled = true; input.disabled = true;
-    $('sq-status').textContent = 'Thinking… free models can take a while.';
+    e.preventDefault();
+    const message = input.value.trim();
+    if(!message || activeRequest) return;
+    if(mode === 'none') { $('sq-status').textContent = 'Use your own key above, or click Try demo.'; return; }
+    if(message.includes('sk-or-') || (apiKey && message.includes(apiKey))) {
+      $('sq-status').textContent = 'That looks like a key. Put keys only in the password field above.';
+      return;
+    }
     addMessage('YOU',message);
+    if(mode === 'demo') {
+      addMessage('DEMO (NOT AI)', 'Would you rather…\nA. Teleport anywhere, but arrive in pajamas?\nB. Fly anywhere, but only at walking speed?\n\nWhich would you pick, and why?');
+      input.value = ''; $('sq-status').textContent = 'Fixed demo example. No AI request was sent.';
+      return;
+    }
+    const controller = new AbortController(); activeRequest = controller;
+    let timedOut = false;
+    const timer = setTimeout(() => {timedOut = true; controller.abort();}, 60000);
+    $('sq-send').disabled = true; input.disabled = true;
+    $('sq-status').textContent = 'Creating your question…';
     try {
-      if(preview) {
-        addMessage('STATIC DEMO (NOT AI)', 'Would you rather…\nA. Teleport anywhere, but arrive in pajamas?\nB. Fly anywhere, but only at walking speed?\n\nWhich would you pick, and why?\n\nFixed demo question. Live mode generates a question for your theme.');
-        input.value = ''; $('sq-status').textContent = 'Preview complete. No message was sent to an AI service.';
-        return;
-      }
-      // CHANGE 2: Your browser calls your backend route. No API key belongs here.
-      const response = await fetch('/api/chat', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({message}), signal: AbortSignal.timeout(65000)
+      // This static HTML page calls OpenRouter directly. There is no backend.
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json'},
+        body: JSON.stringify({model: MODEL, messages: [
+          {role: 'system', content: INSTRUCTIONS},
+          {role: 'user', content: message}
+        ], max_tokens: 2048, stream: false}),
+        signal: controller.signal
       });
       const data = await response.json();
-      if(!response.ok) throw new Error(data.error || 'The request failed.');
-      addMessage(data.demo ? 'DEMO (NOT AI)' : 'GAME BOT', data.reply);
-      input.value = ''; $('sq-status').textContent = 'Ready for another dilemma.';
+      if(!response.ok || data.error) {
+        const code = data.error?.code || response.status;
+        throw new Error(Number(code) === 401 ? 'Key not accepted. Paste a valid OpenRouter key.'
+          : Number(code) === 429 ? 'Free model is busy or your quota is used. Wait, or try demo.'
+          : Number(code) === 402 ? 'Check your OpenRouter balance and key limits.'
+          : Number(code) === 403 ? 'Check model access and privacy settings in OpenRouter.'
+          : 'OpenRouter could not answer. Try again later or use demo.');
+      }
+      const reply = data.choices?.[0]?.message?.content;
+      if(typeof reply !== 'string' || !reply.trim()) throw new Error('No text returned. Try a shorter theme or try again later.');
+      if(controller.signal.aborted) return;
+      addMessage('GAME BOT',reply);
+      input.value = ''; $('sq-status').textContent = 'Which choice wins?';
     } catch(error) {
-      $('sq-status').textContent = error.name === 'TimeoutError' ? 'Timed out. Try again later.' : error.message;
-    } finally { $('sq-send').disabled = false; input.disabled = false; input.focus(); }
+      if(controller.signal.aborted && !timedOut) return;
+      $('sq-status').textContent = timedOut ? 'That took too long. Try again later or use demo.'
+        : error instanceof TypeError ? 'Could not reach OpenRouter. Check your connection or try demo.' : error.message;
+    } finally {
+      clearTimeout(timer); activeRequest = null;
+      $('sq-send').disabled = false; input.disabled = false; input.focus();
+    }
   };
 })();
 </script>
