@@ -4,11 +4,12 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 // CHANGE 1: Give your bot a role, an output format, and a boundary.
-export const SYSTEM_PROMPT = `You are Sidequest Bot, a friendly activity planner.
-Suggest one safe, realistic activity that fits the user's time, budget and mood.
-Reply in fewer than 100 words with: Quest, First step, Time, Cost.
-Ask one short question if essential information is missing.
-Use general ideas. Do not invent campus events, opening hours or live facts.`;
+export const SYSTEM_PROMPT = `You create playful would-you-rather questions.
+Use the user's theme. If no theme is given, choose a light everyday theme.
+Write exactly two funny, balanced choices labeled A and B.
+End with: Which would you pick, and why?
+Keep the whole reply under 70 words. Keep it friendly and suitable for a club meeting.
+Avoid dangerous dares, personal attacks, and private information.`;
 
 export const MODEL = 'nvidia/nemotron-3-ultra-550b-a55b:free';
 const ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions';
@@ -46,7 +47,7 @@ export function createApp({ apiKey = process.env.OPENROUTER_API_KEY,
       try { input = JSON.parse(body); } catch { return json(res, 400, { error: 'Invalid JSON.' }); }
       const message = input?.message;
       if (typeof message !== 'string' || !message.trim() || message.length > 1000) return json(res, 400, { error: 'Write a message of 1–1000 characters.' });
-      if (demo) return json(res, 200, { demo: true, reply: 'DEMO RESPONSE (canned, not AI)\nQuest: Make a tiny photo story.\nFirst step: Find three ordinary objects near you and give each a funny caption.\nTime: 15 minutes.\nCost: $0.\n\nLive mode will respond to your actual request.' });
+      if (demo) return json(res, 200, { demo: true, reply: 'DEMO RESPONSE (canned, not AI)\nWould you rather…\nA. Teleport anywhere, but arrive in pajamas?\nB. Fly anywhere, but only at walking speed?\n\nWhich would you pick, and why?\n\nLive mode generates a question for your theme.' });
       if (!apiKey || apiKey === 'paste_your_key_here') return json(res, 503, { error: 'Add your key to .env, then restart the server. Or use DEMO_MODE=true.' });
       if (busy) return json(res, 429, { error: 'One request is already running. Wait for it to finish.' });
       busy = true;
@@ -87,5 +88,5 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const port = Number(process.env.PORT || 4320);
   const server = createApp();
   server.on('error', error => { console.error(error.code === 'EADDRINUSE' ? `Port ${port} is busy. Stop the other server, or change PORT in .env.` : error.message); process.exitCode = 1; });
-  server.listen(port, '127.0.0.1', () => console.log(`Sidequest Bot: http://127.0.0.1:${port}\nMode: ${process.env.DEMO_MODE === 'true' ? 'DEMO (no AI calls)' : 'LIVE (OpenRouter)'}\nKeep this terminal open. Ctrl+C stops the server.`));
+  server.listen(port, '127.0.0.1', () => console.log(`Would You Rather: http://127.0.0.1:${port}\nMode: ${process.env.DEMO_MODE === 'true' ? 'DEMO (no AI calls)' : 'LIVE (OpenRouter)'}\nKeep this terminal open. Ctrl+C stops the server.`));
 }

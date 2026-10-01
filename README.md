@@ -31,6 +31,6 @@ The click counter lives only in your browser and resets when the page reloads. T
 
 ## Next project: OpenRouter chatbot
 
-[Open the Sidequest workshop guide](ai-sidequest/README.md) or try `ai-sidequest/index.html` in a browser. The new section includes a six-slide, 20-minute workshop, a floating chat widget, a full-page bot layout, and a dependency-free Node.js backend using OpenRouter's NVIDIA Nemotron 3 Ultra free model.
+[Open the Would You Rather workshop guide](ai-would-you-rather/README.md) or try `ai-would-you-rather/index.html` in a browser. The new section includes a six-slide, 20-minute workshop, a floating chat widget, a full-page bot layout, and a dependency-free Node.js backend using OpenRouter's NVIDIA Nemotron 3 Ultra free model.
 
-The public static preview returns a clearly labeled fixed example. For real AI responses, run the files in `ai-sidequest/project` locally and put your own key in a private `.env` file. Existing static hosting settings stay the same. A public live AI service would require a separate backend deployment.
+The public static preview returns a clearly labeled fixed example. For real AI responses, run the files in `ai-would-you-rather/project` locally and put your own key in a private `.env` file. Existing static hosting settings stay the same. A public live AI service would require a separate backend deployment.
