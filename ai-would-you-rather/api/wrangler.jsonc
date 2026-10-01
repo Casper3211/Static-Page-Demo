@@ -1,7 +1,0 @@
-{
-  "name": "ai-club-game",
-  "main": "worker.mjs",
-  "compatibility_date": "2026-09-01",
-  "workers_dev": true,
-  "vars": { "ALLOWED_ORIGIN": "https://YOUR-USERNAME.github.io" }
-}
