@@ -4,25 +4,18 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Would You Rather? · UConn AI Club</title>
 
-<!-- BOT CSS START: copy this style block to your existing page's head -->
 
-<!-- BOT CSS END -->
+
+
 <link rel="stylesheet" href="../assets/chat.css">
 </head>
 <body data-layout="full">
 <nav class="route-nav" aria-label="Page navigation"><a href="../">← Home</a><a href="../chat/">Full-page AI chat</a><a href="../ai-would-you-rather/">Floating AI chat</a></nav>
-<main>
-  <div class="brand">UConn AI Club</div>
-  <!-- Customize: change the title below. -->
-  <h1>Would you<br><em>rather…?</em></h1>
-  <p class="intro">Pick a theme. Get two ridiculous choices. Defend your answer.</p>
-  <div class="ideas"><button data-prompt="Give me a funny would-you-rather question about superpowers.">Superpowers</button><button data-prompt="Give me a funny would-you-rather question about campus life.">Campus life</button></div>
-  <p class="footnote">Try the floating chat window or open the full-page layout. Try built-in replies, or connect your own key using the instructions in the chat.<br><a href="../chat/">Full-page AI chat</a> · <a href="../">Back</a></p>
-</main>
-<!-- BOT HTML START: copy this block just before your existing page's closing body tag -->
+
+
 <button id="sq-toggle" aria-controls="sq-panel" aria-expanded="false">✦ Give me a dilemma</button>
 <section id="sq-panel" aria-labelledby="sq-title" hidden>
-  <header><div><h2 id="sq-title">Would You Rather?</h2><div id="sq-mode">Static chat demo · built-in replies</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
+  <header><div><h2 id="sq-title">UConn AI Club · AI Chat</h2><div id="sq-mode">Static chat demo · built-in replies</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
   <form id="sq-connection" autocomplete="off">
     <label for="sq-key">1. Connect your OpenRouter key</label>
     <input id="sq-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your OpenRouter key here to enable AI">
@@ -42,10 +35,10 @@
   <form id="sq-form"><label for="sq-input">Your message</label><input id="sq-input" maxlength="1000" required autocomplete="off" placeholder="Try a theme: food, space, college…"><button id="sq-send">Send</button><p id="sq-status" role="status"></p></form>
   <p id="sq-privacy">Demo sends no request. With a key, your message goes to OpenRouter and its model provider. Use fictional themes.</p>
 </section>
-<!-- BOT HTML END -->
-<!-- BOT SCRIPT START: copy this script after the bot HTML -->
+
+
 <script src="../assets/markdown.js"></script>
 <script src="../assets/chat.js"></script>
-<!-- BOT SCRIPT END -->
+
 </body>
 </html>
