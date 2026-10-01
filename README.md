@@ -28,3 +28,9 @@ After deployment, open the host's provided URL and click the button to confirm t
 Edit the heading and paragraphs in `index.html`, change the colors in its `<style>` block, then commit and push. Hosts with automatic deployment enabled will publish the new version.
 
 The click counter lives only in your browser and resets when the page reloads. This demo has no backend or database.
+
+## Next project: OpenRouter chatbot
+
+[Open the Sidequest workshop guide](ai-sidequest/README.md) or try `ai-sidequest/index.html` in a browser. The new section includes a six-slide, 20-minute workshop, a floating chat widget, a full-page bot layout, and a dependency-free Node.js backend using OpenRouter's NVIDIA Nemotron 3 Ultra free model.
+
+The public static preview returns a clearly labeled fixed example. For real AI responses, run the files in `ai-sidequest/project` locally and put your own key in a private `.env` file. Existing static hosting settings stay the same. A public live AI service would require a separate backend deployment.

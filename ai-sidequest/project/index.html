@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sidequest Bot · AI Club</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;background:#f8faf8;color:#142d32;font:18px/1.55 Arial,sans-serif}main{max-width:1050px;margin:auto;padding:55px 28px 170px}.brand{font-weight:700;color:#087e80;letter-spacing:2px;font-size:15px}h1{font-size:clamp(46px,7vw,84px);line-height:1.05;max-width:800px;letter-spacing:-3px;margin:75px 0 28px}h1 em{font-style:normal;color:#087e80}.intro{max-width:530px;color:#536b70;font-size:21px}.ideas{display:flex;flex-wrap:wrap;gap:12px;margin-top:38px}.ideas button{border:1px solid #b7d1cb;background:white;border-radius:8px;padding:13px 18px;color:#142d32;font:inherit;cursor:pointer}.footnote{margin-top:65px;color:#536b70;font-size:15px;max-width:560px}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #c17b24;outline-offset:3px}
+</style>
+<!-- BOT CSS START: copy this style block to your existing page's head -->
+<style>
+  #sq-toggle{position:fixed;right:24px;bottom:24px;z-index:1000;border:0;border-radius:99px;padding:18px 25px;background:#087e80;color:white;font:bold 17px Arial;box-shadow:0 6px 30px #142d3230;cursor:pointer}
+  #sq-panel{position:fixed;right:24px;bottom:94px;z-index:1000;width:390px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 116px);background:white;color:#142d32;border:1px solid #d2e2dc;border-radius:18px;box-shadow:0 12px 60px #142d3220;overflow:auto;font:16px/1.45 Arial,sans-serif}
+  #sq-panel[hidden]{display:none}#sq-panel header{padding:20px 22px;background:#142d32;color:white;display:flex;align-items:center;justify-content:space-between}#sq-panel h2{font-size:21px;margin:0}#sq-close{background:none;color:white;border:0;font-size:25px;cursor:pointer}#sq-mode{font-size:12px;color:#96e3cb;margin-top:4px}
+  #sq-log{padding:18px 20px;max-height:280px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}.sq-message{margin:0 0 15px;padding-bottom:15px;border-bottom:1px solid #e6efec}.sq-message strong{display:block;font-size:12px;letter-spacing:1px;color:#087e80;margin-bottom:6px}#sq-form{padding:0 20px 18px}#sq-form label{display:block;font-size:13px;margin-bottom:6px}#sq-input{box-sizing:border-box;width:100%;font:16px Arial;padding:12px;border:1px solid #9bbab1;border-radius:7px}#sq-send{margin-top:10px;width:100%;background:#087e80;color:white;border:0;border-radius:7px;padding:12px;font:bold 15px Arial;cursor:pointer}#sq-send:disabled{opacity:.6;cursor:wait}#sq-status{font-size:13px;color:#536b70;min-height:20px;margin:10px 0 0}#sq-privacy{font-size:11px;padding:0 20px 16px;color:#536b70;margin:0}
+  @media(max-width:500px){#sq-panel{right:16px;bottom:87px}#sq-toggle{right:16px;bottom:16px}#sq-log{max-height:210px}}
+  body.sq-full main,body.sq-full #sq-toggle{display:none}body.sq-full #sq-panel{position:relative;right:auto;bottom:auto;margin:40px auto;width:650px;max-height:none}body.sq-full #sq-log{max-height:50vh}body.sq-full #sq-close{display:none}
+</style>
+<!-- BOT CSS END -->
+</head>
+<body>
+<main>
+  <div class="brand">AI CLUB / MINI PROJECT</div>
+  <h1>A little bored?<br>Find your next <em>sidequest.</em></h1>
+  <p class="intro">Tell the bot your time, budget, and mood. Get one small idea you can actually try.</p>
+  <div class="ideas"><button data-prompt="I have 15 minutes and $0. Give me something creative to do indoors.">15 min · $0 · creative</button><button data-prompt="I have 30 minutes and $5. Suggest a relaxing activity.">30 min · $5 · relaxed</button></div>
+  <p class="footnote">Your website can keep its own design. The floating button is the AI layer.<br>Prefer a whole page? <a href="/bot">Open the standalone bot</a>.</p>
+</main>
+<!-- BOT HTML START: copy this block just before your existing page's closing body tag -->
+<button id="sq-toggle" aria-controls="sq-panel" aria-expanded="false">✦ Ask Sidequest</button>
+<section id="sq-panel" aria-labelledby="sq-title" hidden>
+  <header><div><h2 id="sq-title">Sidequest Bot</h2><div id="sq-mode">Checking mode…</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
+  <div id="sq-log" role="log" aria-live="polite"><div class="sq-message"><strong>SIDEQUEST</strong>What is your time, budget, and mood? Each request is a fresh conversation.</div></div>
+  <form id="sq-form"><label for="sq-input">Your message</label><input id="sq-input" maxlength="1000" required autocomplete="off" placeholder="15 minutes, $0, feeling creative"><button id="sq-send">Send</button><p id="sq-status" role="status"></p></form>
+  <p id="sq-privacy">Live mode sends your message to OpenRouter and NVIDIA. Use fictional or non-sensitive inputs. Check AI suggestions before acting.</p>
+</section>
+<!-- BOT HTML END -->
+<!-- BOT SCRIPT START: copy this script after the bot HTML -->
+<script>
+(() => {
+  const preview = globalThis.SIDEQUEST_PREVIEW === true;
+  const $ = id => document.getElementById(id);
+  const panel = $('sq-panel'), toggle = $('sq-toggle'), input = $('sq-input');
+  function openChat() { panel.hidden = false; toggle.setAttribute('aria-expanded','true'); input.focus(); }
+  function closeChat() { panel.hidden = true; toggle.setAttribute('aria-expanded','false'); toggle.focus(); }
+  toggle.onclick = () => panel.hidden ? openChat() : closeChat();
+  $('sq-close').onclick = closeChat;
+  panel.addEventListener('keydown', e => { if(e.key === 'Escape' && location.pathname !== '/bot') closeChat(); });
+  document.querySelectorAll('[data-prompt]').forEach(button => button.onclick = () => {openChat(); input.value = button.dataset.prompt;});
+  if(location.pathname === '/bot' || new URLSearchParams(location.search).get('view') === 'bot') {document.body.classList.add('sq-full'); openChat();}
+  if(preview) $('sq-mode').textContent = 'STATIC PREVIEW · canned response, no AI call';
+  else fetch('/api/config').then(r => { if(!r.ok) throw Error(); return r.json(); }).then(c => {$('sq-mode').textContent = c.demo ? 'DEMO MODE · canned response, no AI call' : 'LIVE MODE · OpenRouter';}).catch(() => {$('sq-mode').textContent = 'Start server.mjs and use its local URL';});
+  function addMessage(label, content) {
+    const line = document.createElement('div'); line.className = 'sq-message';
+    const name = document.createElement('strong'); name.textContent = label;
+    line.append(name,document.createTextNode(content)); $('sq-log').append(line);
+    $('sq-log').scrollTop = $('sq-log').scrollHeight;
+  }
+  $('sq-form').onsubmit = async e => {
+    e.preventDefault(); const message = input.value.trim(); if(!message) return;
+    $('sq-send').disabled = true; input.disabled = true;
+    $('sq-status').textContent = 'Thinking… free models can take a while.';
+    addMessage('YOU',message);
+    try {
+      if(preview) {
+        addMessage('STATIC DEMO (NOT AI)', 'Quest: Make a tiny photo story.\nFirst step: Find three ordinary objects and give each a funny caption.\nTime: 15 minutes.\nCost: $0.\n\nThis is a fixed example. Run the workshop project locally to get real OpenRouter answers.');
+        input.value = ''; $('sq-status').textContent = 'Preview complete. No message was sent to an AI service.';
+        return;
+      }
+      // CHANGE 2: Your browser calls your backend route. No API key belongs here.
+      const response = await fetch('/api/chat', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({message}), signal: AbortSignal.timeout(65000)
+      });
+      const data = await response.json();
+      if(!response.ok) throw new Error(data.error || 'The request failed.');
+      addMessage(data.demo ? 'DEMO (NOT AI)' : 'SIDEQUEST', data.reply);
+      input.value = ''; $('sq-status').textContent = 'Ready for another idea.';
+    } catch(error) {
+      $('sq-status').textContent = error.name === 'TimeoutError' ? 'Timed out. Try again later.' : error.message;
+    } finally { $('sq-send').disabled = false; input.disabled = false; input.focus(); }
+  };
+})();
+</script>
+<!-- BOT SCRIPT END -->
+</body>
+</html>
