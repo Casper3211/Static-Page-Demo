@@ -42,6 +42,7 @@
     if(label==='YOU') body.textContent=content; else renderMarkdown(body,content);
     line.append(name,body); $('sq-log').append(line);
     $('sq-log').scrollTop = $('sq-log').scrollHeight;
+    return line;
   }
   $('sq-form').onsubmit = async e => {
     e.preventDefault();
@@ -49,26 +50,37 @@
     if(message.includes('sk-or-') || (apiKey && message.includes(apiKey))){$('sq-status').textContent='Put keys in the password field, not a message.';return;}
     if(conversation.reduce((n,m)=>n+m.content.length,0)+message.length>48000){$('sq-status').textContent='This conversation is long. Click New chat to start a fresh session.';return;}
     input.value='';
-    addMessage('YOU',message);
+    const pendingMessage=addMessage('YOU',message);
     if(apiKey) {
       const controller=new AbortController();activeRequest=controller;
-      const timer=setTimeout(()=>controller.abort(),60000);
+      let timedOut=false;
+      const timer=setTimeout(()=>{timedOut=true;controller.abort();},180000);
       $('sq-send').disabled=true;$('sq-status').textContent='Waiting for AI…';
       try {
         const response=await fetch('https://openrouter.ai/api/v1/chat/completions',{
           method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
-          body:JSON.stringify({model:MODEL,messages:[{role:'system',content:SYSTEM},...conversation,{role:'user',content:message}],max_tokens:2048,stream:false}),signal:controller.signal
+          body:JSON.stringify({model:MODEL,messages:[{role:'system',content:SYSTEM},...conversation,{role:'user',content:message}],max_tokens:8192,stream:false}),signal:controller.signal
         });
         if(!response.ok) throw new Error(response.status===401?'Key rejected. Paste a new key and click Use / update key.':response.status===429?'Free model busy or quota exhausted. Wait or use demo.':'OpenRouter could not answer. Check your key, model access, and quota.');
-        const data=await response.json();const reply=data.choices?.[0]?.message?.content;
-        if(typeof reply!=='string'||!reply.trim()) throw new Error('No text returned. Try again later.');
-        if(controller.signal.aborted)return;
+        const data=await response.json();
+        if(data.error) throw new Error(Number(data.error.code)===429?'Free model busy or quota exhausted. Wait and resend.':'OpenRouter reported a provider error. Wait and resend.');
+        const choice=data.choices?.[0], content=choice?.message?.content;
+        const reply=typeof content==='string'?content:Array.isArray(content)?content.filter(part=>part.type==='text'&&typeof part.text==='string').map(part=>part.text).join('\n'):'';
+        if(!reply.trim()) {
+          if(choice?.finish_reason==='length') throw new Error('The model used its response limit before producing an answer, possibly while reasoning. Try a shorter question or New chat.');
+          if(choice?.finish_reason==='content_filter'||choice?.message?.refusal) throw new Error('The model declined this request. Try rephrasing it.');
+          if(choice?.finish_reason==='error'||choice?.error) throw new Error('The model provider stopped with an error. Wait and resend.');
+          throw new Error('The provider returned no final answer. Your message is restored below; wait and resend.');
+        }
+        if(controller.signal.aborted){pendingMessage.remove();return;}
         conversation.push({role:'user',content:message},{role:'assistant',content:reply});
         addMessage('AI',reply);$('sq-status').textContent='Keep chatting — I can use the earlier messages in this session.';
       } catch(error) {
-        if(controller.signal.aborted) return;
+        pendingMessage.remove();
+        if(controller.signal.aborted&&!timedOut) return;
         if(!input.value) input.value=message;
-        if(!controller.signal.aborted) $('sq-status').textContent=error instanceof TypeError?'Connection failed. Try again or use demo.':error.message;
+        if(timedOut) $('sq-status').textContent='The model did not finish within 3 minutes. Your message is restored; try again later.';
+        else if(!controller.signal.aborted) $('sq-status').textContent=error instanceof TypeError?'Connection failed. Try again or use demo.':error.message;
         else if(apiKey) $('sq-status').textContent='Request stopped. Send again when ready.';
       } finally {clearTimeout(timer);activeRequest=null;$('sq-send').disabled=false;}
       return;
