@@ -1,10 +1,10 @@
 # UConn AI Club static website
 
-Three static pages, no dependencies or API keys:
+Three static pages, no dependencies. The chat has optional visitor-key AI mode:
 
 - `index.html` — homepage and click counter.
 - `game/index.html` — Would You Rather game.
-- `ai-would-you-rather/index.html` — floating chat demo; `?view=bot` opens the full-page view. Replies are built-in, not AI-generated.
+- `ai-would-you-rather/index.html` — floating chat demo; `?view=bot` opens the full-page view. Built-in replies work without a key. The page includes instructions and a password field to enter or replace your own OpenRouter key for AI replies; it clears on refresh. Never commit keys into HTML.
 
 The homepage links to both examples, and both link back home. Their URLs are your site base URL followed by `game/` or `ai-would-you-rather/`.
 

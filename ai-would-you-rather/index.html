@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Would You Rather? · AI Club</title>
+<title>Would You Rather? · UConn AI Club</title>
 <style>
   /* Customize: change the accent color. */
   :root{--accent:#087e80}
@@ -27,20 +27,39 @@
   <h1>Would you<br><em>rather…?</em></h1>
   <p class="intro">Pick a theme. Get two ridiculous choices. Defend your answer.</p>
   <div class="ideas"><button data-prompt="Give me a funny would-you-rather question about superpowers.">Superpowers</button><button data-prompt="Give me a funny would-you-rather question about campus life.">Campus life</button></div>
-  <p class="footnote">Try the floating chat window or open the full-page layout. Replies are built-in examples.<br><a href="?view=bot">Full-page game</a> · <a href="../">Back</a></p>
+  <p class="footnote">Try the floating chat window or open the full-page layout. Try built-in replies, or connect your own key using the instructions in the chat.<br><a href="?view=bot">Full-page game</a> · <a href="../">Back</a></p>
 </main>
 <!-- BOT HTML START: copy this block just before your existing page's closing body tag -->
 <button id="sq-toggle" aria-controls="sq-panel" aria-expanded="false">✦ Give me a dilemma</button>
 <section id="sq-panel" aria-labelledby="sq-title" hidden>
   <header><div><h2 id="sq-title">Would You Rather?</h2><div id="sq-mode">Static chat demo · built-in replies</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
+  <form id="sq-connection" autocomplete="off">
+    <details open><summary>How to add or update your key</summary>
+      <ol style="font-size:13px;padding-left:20px;line-height:1.6">
+        <li>Sign in at <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer">OpenRouter Keys</a> and choose <strong>Create Key</strong>.</li>
+        <li>Copy your key and paste it into the password field below.</li>
+        <li>Click <strong>Use / update key</strong>, then send a theme such as “food”.</li>
+        <li>To replace it, paste a new key and click the same button. Revoke the old key on OpenRouter if you no longer need it.</li>
+      </ol>
+      <p style="font-size:12px">Paste into this live page, <strong>not the HTML code on GitHub</strong>. Published code is public. Each visitor uses their own key and quota. GitHub Secrets cannot be read privately by a static webpage.</p>
+    </details>
+    <label for="sq-key">Your OpenRouter key</label>
+    <input id="sq-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your key here">
+    <div class="sq-key-actions"><button type="submit">Use / update key</button><button type="button" id="sq-clear">Clear key / demo</button></div>
+    <p id="sq-key-note">Kept only in this page's memory; refresh clears it. Only use your key on a page whose code you trust.</p>
+  </form>
   <div id="sq-log" role="log" aria-live="polite"><div class="sq-message"><strong>GAME BOT</strong>Give me a theme, like superpowers, food, or campus life. I will give you two choices.</div></div>
   <form id="sq-form"><label for="sq-input">Your message</label><input id="sq-input" maxlength="1000" required autocomplete="off" placeholder="Try a theme: food, space, college…"><button id="sq-send">Send</button><p id="sq-status" role="status"></p></form>
-  <p id="sq-privacy">Built-in replies. No AI service, API key, or network request.</p>
+  <p id="sq-privacy">Demo sends no request. With a key, your message goes to OpenRouter and its model provider. Use fictional themes.</p>
 </section>
 <!-- BOT HTML END -->
 <!-- BOT SCRIPT START: copy this script after the bot HTML -->
 <script>
 (() => {
+  // Never paste a real key in this source file. Use the live password field.
+  let apiKey = '';
+  let activeRequest = null;
+  const MODEL = 'nvidia/nemotron-3-ultra-550b-a55b:free';
   const $ = id => document.getElementById(id);
   const panel = $('sq-panel'), toggle = $('sq-toggle'), input = $('sq-input');
   const fullPage = new URLSearchParams(location.search).get('view') === 'bot';
@@ -53,16 +72,46 @@
   document.querySelectorAll('[data-prompt]').forEach(button => button.onclick = () => {openChat(); input.value = button.dataset.prompt;});
   if(fullPage) {document.body.classList.add('sq-full'); openChat();}
 
+  function clearKey() { activeRequest?.abort(); apiKey=''; $('sq-key').value=''; $('sq-mode').textContent='Demo · built-in replies'; }
+  $('sq-connection').onsubmit=e=>{
+    e.preventDefault();const value=$('sq-key').value.trim();
+    if(!value){$('sq-status').textContent='Paste a key into the password field first.';return;}
+    clearKey();apiKey=value;$('sq-mode').textContent='AI · key ready (tested when you send)';
+    $('sq-status').textContent='Key updated. Send a theme to test it.';input.focus();
+  };
+  $('sq-clear').onclick=()=>{clearKey();$('sq-status').textContent='Key cleared. Demo mode is ready.';};
+  window.addEventListener('pagehide',clearKey);
   function addMessage(label, content) {
     const line = document.createElement('div'); line.className = 'sq-message';
     const name = document.createElement('strong'); name.textContent = label;
     line.append(name,document.createTextNode(content)); $('sq-log').append(line);
     $('sq-log').scrollTop = $('sq-log').scrollHeight;
   }
-  $('sq-form').onsubmit = e => {
+  $('sq-form').onsubmit = async e => {
     e.preventDefault();
-    const message=input.value.trim(); if(!message) return;
+    const message=input.value.trim(); if(!message || activeRequest) return;
+    if(message.includes('sk-or-') || (apiKey && message.includes(apiKey))){$('sq-status').textContent='Put keys in the password field, not a message.';return;}
     addMessage('YOU',message);
+    if(apiKey) {
+      const controller=new AbortController();activeRequest=controller;
+      const timer=setTimeout(()=>controller.abort(),60000);
+      $('sq-send').disabled=true;$('sq-status').textContent='Waiting for AI…';
+      try {
+        const response=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+          method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
+          body:JSON.stringify({model:MODEL,messages:[{role:'system',content:'Write a friendly would-you-rather question with two funny choices labeled A and B based on the theme. Keep it under 70 words.'},{role:'user',content:message}],max_tokens:2048,stream:false}),signal:controller.signal
+        });
+        if(!response.ok) throw new Error(response.status===401?'Key rejected. Paste a new key and click Use / update key.':response.status===429?'Free model busy or quota exhausted. Wait or use demo.':'OpenRouter could not answer. Check your key, model access, and quota.');
+        const data=await response.json();const reply=data.choices?.[0]?.message?.content;
+        if(typeof reply!=='string'||!reply.trim()) throw new Error('No text returned. Try again later.');
+        if(controller.signal.aborted)return;
+        addMessage('AI',reply);input.value='';$('sq-status').textContent='Which would you choose?';
+      } catch(error) {
+        if(!controller.signal.aborted) $('sq-status').textContent=error instanceof TypeError?'Connection failed. Try again or use demo.':error.message;
+        else if(apiKey) $('sq-status').textContent='Request stopped. Send again when ready.';
+      } finally {clearTimeout(timer);activeRequest=null;$('sq-send').disabled=false;}
+      return;
+    }
     const food=/food|pizza|eat/i.test(message);
     addMessage('DEMO (BUILT-IN)',food ? 'A. Eat pizza with a spoon forever?\nB. Eat soup with chopsticks forever?\n\nWhich would you pick, and why?' : 'A. Teleport anywhere, but arrive in pajamas?\nB. Fly anywhere, but only at walking speed?\n\nWhich would you pick, and why?');
     input.value=''; $('sq-status').textContent='Built-in example. No AI request was sent.';
