@@ -1,14 +1,23 @@
-# UConn AI Club static website
+# UConn AI Club website
 
-Three static pages, no dependencies. The chat has optional visitor-key AI mode:
+The homepage has two direct AI chat links:
 
-- `index.html` — homepage and click counter.
-- `game/index.html` — Would You Rather game.
-- `ai-would-you-rather/index.html` — floating chat demo; `?view=bot` opens the full-page view. Built-in replies work without a key. The page includes instructions and a password field to enter or replace your own OpenRouter key for AI replies; it clears on refresh. Never commit keys into HTML.
+- `chat/` — full-page AI chat.
+- `ai-would-you-rather/` — floating AI chat, opened automatically.
 
-The homepage links to both examples, and both link back home. Their URLs are your site base URL followed by `game/` or `ai-would-you-rather/`.
+Both show the OpenRouter key field at the top. Paste your own key, click **Use / update key**, and send a theme. **Clear key / demo** or refreshing clears the key from page memory. Navigating to the other route also starts a new session. Never commit a key into the source.
 
-The existing GitHub **pages build and deployment** workflow publishes updates automatically. Keep **Settings → Pages → Deploy from a branch → main → /(root)**. GitHub manages this publishing workflow; no extra workflow file or credentials are needed.
+The original homepage and `game/` remain available. The game and built-in chat replies need no key.
 
-To add a route, create `my-page/index.html` and link to `my-page/` from the homepage. Use `../` to link home from that page. Keep relative links so the site works under a GitHub Pages repository path.
+## Files
 
+- `index.html` — homepage and direct chat links.
+- `game/index.html` — built-in Would You Rather game.
+- `chat/index.html` and `ai-would-you-rather/index.html` — the two chat layouts.
+- `assets/chat.js` — shared chat behavior and OpenRouter request.
+- `assets/chat.css` — shared chat styling.
+- `assets/markdown.js` — lightweight Markdown rendering: bold, emphasis, lists, headings, links, quotes and code. Raw HTML stays literal text. This is a common Markdown subset, not full CommonMark.
+
+The existing GitHub **pages build and deployment** workflow publishes pushes. Keep **Settings → Pages → Deploy from a branch → main → /(root)**.
+
+To add a route, create `my-page/index.html` and link to `my-page/` from the homepage. Use `../` to return home from a child page. Keep relative links for GitHub Pages repository paths.
