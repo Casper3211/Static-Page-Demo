@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Would You Rather? · AI Club</title>
 <style>
-  /* EDIT 1: change the accent color. */
+  /* Customize: change the accent color. */
   :root{--accent:#087e80}
   *{box-sizing:border-box}body{margin:0;background:#f8faf8;color:#142d32;font:18px/1.55 Arial,sans-serif}main{max-width:1050px;margin:auto;padding:55px 28px 170px}.brand{font-weight:700;color:var(--accent);letter-spacing:2px;font-size:15px}h1{font-size:clamp(46px,7vw,84px);line-height:1.05;max-width:800px;letter-spacing:-3px;margin:75px 0 28px}h1 em{font-style:normal;color:var(--accent)}.intro{max-width:530px;color:#536b70;font-size:21px}.ideas{display:flex;flex-wrap:wrap;gap:12px;margin-top:38px}.ideas button{border:1px solid #b7d1cb;background:white;border-radius:8px;padding:13px 18px;color:#142d32;font:inherit;cursor:pointer}.footnote{margin-top:65px;color:#536b70;font-size:15px;max-width:560px}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #c17b24;outline-offset:3px}
 </style>
@@ -23,41 +23,28 @@
 <body>
 <main>
   <div class="brand">AI CLUB / MINI PROJECT</div>
-  <!-- EDIT 2: change the title below. -->
+  <!-- Customize: change the title below. -->
   <h1>Would you<br><em>rather…?</em></h1>
   <p class="intro">Pick a theme. Get two ridiculous choices. Defend your answer.</p>
   <div class="ideas"><button data-prompt="Give me a funny would-you-rather question about superpowers.">Superpowers</button><button data-prompt="Give me a funny would-you-rather question about campus life.">Campus life</button></div>
-  <p class="footnote">Use your own OpenRouter key to generate questions, or try the demo.<br><a href="?view=bot">Full-page game</a> · <a href="slides/Would-You-Rather-Workshop.pptx">Workshop slides</a> · <a href="../">Back</a></p>
+  <p class="footnote">Generate a question with AI, or try the fixed demo.<br><a href="?view=bot">Full-page game</a> · <a href="slides/Would-You-Rather-Workshop.pptx">Workshop slides</a> · <a href="../">Back</a></p>
 </main>
 <!-- BOT HTML START: copy this block just before your existing page's closing body tag -->
 <button id="sq-toggle" aria-controls="sq-panel" aria-expanded="false">✦ Give me a dilemma</button>
 <section id="sq-panel" aria-labelledby="sq-title" hidden>
-  <header><div><h2 id="sq-title">Would You Rather?</h2><div id="sq-mode">Connect your key or try demo</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
-  <form id="sq-connection" autocomplete="off">
-    <label for="sq-key">Your OpenRouter key</label>
-    <input id="sq-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your own key here">
-    <div class="sq-key-actions"><button type="submit">Use my key</button><button type="button" id="sq-clear">Clear key</button><button type="button" id="sq-demo">Try demo</button></div>
-    <p id="sq-key-note">Only in this tab's memory. Refresh clears it. Never put a key in GitHub code.</p>
-  </form>
+  <header><div><h2 id="sq-title">Would You Rather?</h2><div id="sq-mode">AI game · or try demo</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
+  <div id="sq-connection"><button type="button" id="sq-live">Use AI</button> <button type="button" id="sq-demo">Try demo</button><p id="sq-key-note">Your website sends themes to its API. No API key is entered here.</p></div>
   <div id="sq-log" role="log" aria-live="polite"><div class="sq-message"><strong>GAME BOT</strong>Give me a theme, like superpowers, food, or campus life. I will give you two choices.</div></div>
   <form id="sq-form"><label for="sq-input">Your message</label><input id="sq-input" maxlength="1000" required autocomplete="off" placeholder="Try a theme: food, space, college…"><button id="sq-send">Send</button><p id="sq-status" role="status"></p></form>
-  <p id="sq-privacy">Your key goes only to OpenRouter. Your theme goes to OpenRouter and NVIDIA. Use non-sensitive inputs.</p>
+  <p id="sq-privacy">Themes go through our API to OpenRouter and its model provider. Use fictional themes.</p>
 </section>
 <!-- BOT HTML END -->
 <!-- BOT SCRIPT START: copy this script after the bot HTML -->
 <script>
 (() => {
-  // EDIT 3: change these instructions, then commit your change on GitHub.
-  const INSTRUCTIONS = `Create a playful would-you-rather question using the user's theme.
-Write exactly two funny, balanced choices labeled A and B.
-End with: Which would you pick, and why?
-Keep it under 70 words, friendly, and suitable for a club meeting.`;
-
-  const MODEL = 'nvidia/nemotron-3-ultra-550b-a55b:free';
-  const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-  // Each visitor enters their own key in the page. Never add a real key here.
-  let apiKey = '';
-  let mode = 'none';
+  // Paste your Worker URL here, ending in /api/chat. This URL is public.
+  const API_URL = 'https://YOUR-WORKER.workers.dev/api/chat';
+  let mode = 'live';
   let activeRequest = null;
   const $ = id => document.getElementById(id);
   const panel = $('sq-panel'), toggle = $('sq-toggle'), input = $('sq-input');
@@ -71,27 +58,14 @@ Keep it under 70 words, friendly, and suitable for a club meeting.`;
   document.querySelectorAll('[data-prompt]').forEach(button => button.onclick = () => {openChat(); input.value = button.dataset.prompt;});
   if(fullPage) {document.body.classList.add('sq-full'); openChat();}
 
-  function resetConnection(nextMode) {
-    activeRequest?.abort();
-    apiKey = '';
-    $('sq-key').value = '';
-    mode = nextMode;
-    $('sq-mode').textContent = mode === 'demo' ? 'DEMO · fixed example, no AI request' : 'Connect your key or try demo';
+  function setMode(next) {
+    activeRequest?.abort(); mode=next;
+    $('sq-mode').textContent=mode==='demo'?'DEMO · fixed example, no AI request':'AI game';
+    $('sq-status').textContent=mode==='demo'?'Send a theme to see a fixed example.':'Enter a theme and press Send.';
   }
-  $('sq-connection').onsubmit = e => {
-    e.preventDefault();
-    const entered = $('sq-key').value.trim();
-    if(!entered) { $('sq-status').textContent = 'Paste your own OpenRouter key first.'; return; }
-    resetConnection('live');
-    apiKey = entered;
-    $('sq-mode').textContent = 'LIVE · key ready for your next request';
-    $('sq-status').textContent = 'Enter a theme and press Send.';
-    input.focus();
-  };
-  $('sq-clear').onclick = () => {resetConnection('none'); $('sq-status').textContent = 'Key cleared from this page.';};
-  $('sq-demo').onclick = () => {resetConnection('demo'); $('sq-status').textContent = 'Send any theme to see a fixed example.';};
-  // No browser storage, cookies, or analytics. Also clear on page departure.
-  window.addEventListener('pagehide', () => resetConnection('none'));
+  $('sq-demo').onclick=()=>setMode('demo');
+  $('sq-live').onclick=()=>setMode('live');
+  window.addEventListener('pagehide',()=>activeRequest?.abort());
 
   function addMessage(label, content) {
     const line = document.createElement('div'); line.className = 'sq-message';
@@ -103,11 +77,8 @@ Keep it under 70 words, friendly, and suitable for a club meeting.`;
     e.preventDefault();
     const message = input.value.trim();
     if(!message || activeRequest) return;
-    if(mode === 'none') { $('sq-status').textContent = 'Use your own key above, or click Try demo.'; return; }
-    if(message.includes('sk-or-') || (apiKey && message.includes(apiKey))) {
-      $('sq-status').textContent = 'That looks like a key. Put keys only in the password field above.';
-      return;
-    }
+    if(message.includes('sk-or-')) { $('sq-status').textContent='Keep API keys in GitHub Secrets, never in messages.'; return; }
+    if(mode==='live' && API_URL.includes('YOUR-WORKER')) { $('sq-status').textContent='Owner: set API_URL in index.html after deploying the bot. Try demo meanwhile.'; return; }
     addMessage('YOU',message);
     if(mode === 'demo') {
       addMessage('DEMO (NOT AI)', 'Would you rather…\nA. Teleport anywhere, but arrive in pajamas?\nB. Fly anywhere, but only at walking speed?\n\nWhich would you pick, and why?');
@@ -120,34 +91,21 @@ Keep it under 70 words, friendly, and suitable for a club meeting.`;
     $('sq-send').disabled = true; input.disabled = true;
     $('sq-status').textContent = 'Creating your question…';
     try {
-      // This static HTML page calls OpenRouter directly. There is no backend.
       const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: {'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json'},
-        body: JSON.stringify({model: MODEL, messages: [
-          {role: 'system', content: INSTRUCTIONS},
-          {role: 'user', content: message}
-        ], max_tokens: 2048, stream: false}),
-        signal: controller.signal
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message}), signal: controller.signal
       });
       const data = await response.json();
-      if(!response.ok || data.error) {
-        const code = data.error?.code || response.status;
-        throw new Error(Number(code) === 401 ? 'Key not accepted. Paste a valid OpenRouter key.'
-          : Number(code) === 429 ? 'Free model is busy or your quota is used. Wait, or try demo.'
-          : Number(code) === 402 ? 'Check your OpenRouter balance and key limits.'
-          : Number(code) === 403 ? 'Check model access and privacy settings in OpenRouter.'
-          : 'OpenRouter could not answer. Try again later or use demo.');
-      }
-      const reply = data.choices?.[0]?.message?.content;
-      if(typeof reply !== 'string' || !reply.trim()) throw new Error('No text returned. Try a shorter theme or try again later.');
+      if(!response.ok) throw new Error(data.error || 'The API could not answer.');
+      const reply=data.reply;
+      if(typeof reply!=='string' || !reply.trim()) throw new Error('No text returned. Try later.');
       if(controller.signal.aborted) return;
       addMessage('GAME BOT',reply);
       input.value = ''; $('sq-status').textContent = 'Which choice wins?';
     } catch(error) {
       if(controller.signal.aborted && !timedOut) return;
       $('sq-status').textContent = timedOut ? 'That took too long. Try again later or use demo.'
-        : error instanceof TypeError ? 'Could not reach OpenRouter. Check your connection or try demo.' : error.message;
+        : error instanceof TypeError ? 'Could not reach the bot API. Check API_URL and ALLOWED_ORIGIN, or try demo.' : error.message;
     } finally {
       clearTimeout(timer); activeRequest = null;
       $('sq-send').disabled = false; input.disabled = false; input.focus();
