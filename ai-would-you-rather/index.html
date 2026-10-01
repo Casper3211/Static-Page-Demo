@@ -22,17 +22,17 @@
 </head>
 <body>
 <main>
-  <div class="brand">AI CLUB / MINI PROJECT</div>
+  <div class="brand">UConn AI Club</div>
   <!-- Customize: change the title below. -->
   <h1>Would you<br><em>rather…?</em></h1>
   <p class="intro">Pick a theme. Get two ridiculous choices. Defend your answer.</p>
   <div class="ideas"><button data-prompt="Give me a funny would-you-rather question about superpowers.">Superpowers</button><button data-prompt="Give me a funny would-you-rather question about campus life.">Campus life</button></div>
-  <p class="footnote">Generate a question with AI, or try the fixed demo.<br><a href="?view=bot">Full-page game</a> · <a href="slides/Would-You-Rather-Workshop.pptx">Workshop slides</a> · <a href="../">Back</a></p>
+  <p class="footnote">Explore the chatbot interface. The fixed demo works now; live AI needs an API backend.<br><a href="?view=bot">Full-page game</a> · <a href="slides/Would-You-Rather-Workshop.pptx">Workshop slides</a> · <a href="../">Back</a></p>
 </main>
 <!-- BOT HTML START: copy this block just before your existing page's closing body tag -->
 <button id="sq-toggle" aria-controls="sq-panel" aria-expanded="false">✦ Give me a dilemma</button>
 <section id="sq-panel" aria-labelledby="sq-title" hidden>
-  <header><div><h2 id="sq-title">Would You Rather?</h2><div id="sq-mode">AI game · or try demo</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
+  <header><div><h2 id="sq-title">Would You Rather?</h2><div id="sq-mode">Advanced chatbot · fixed demo until connected</div></div><button id="sq-close" aria-label="Close chat">×</button></header>
   <div id="sq-connection"><button type="button" id="sq-live">Use AI</button> <button type="button" id="sq-demo">Try demo</button><p id="sq-key-note">Your website sends themes to its API. No API key is entered here.</p></div>
   <div id="sq-log" role="log" aria-live="polite"><div class="sq-message"><strong>GAME BOT</strong>Give me a theme, like superpowers, food, or campus life. I will give you two choices.</div></div>
   <form id="sq-form"><label for="sq-input">Your message</label><input id="sq-input" maxlength="1000" required autocomplete="off" placeholder="Try a theme: food, space, college…"><button id="sq-send">Send</button><p id="sq-status" role="status"></p></form>
@@ -44,7 +44,7 @@
 (() => {
   // Paste your Worker URL here, ending in /api/chat. This URL is public.
   const API_URL = 'https://YOUR-WORKER.workers.dev/api/chat';
-  let mode = 'live';
+  let mode = API_URL.includes('YOUR-WORKER') ? 'demo' : 'live';
   let activeRequest = null;
   const $ = id => document.getElementById(id);
   const panel = $('sq-panel'), toggle = $('sq-toggle'), input = $('sq-input');
@@ -63,6 +63,7 @@
     $('sq-mode').textContent=mode==='demo'?'DEMO · fixed example, no AI request':'AI game';
     $('sq-status').textContent=mode==='demo'?'Send a theme to see a fixed example.':'Enter a theme and press Send.';
   }
+  setMode(mode);
   $('sq-demo').onclick=()=>setMode('demo');
   $('sq-live').onclick=()=>setMode('live');
   window.addEventListener('pagehide',()=>activeRequest?.abort());

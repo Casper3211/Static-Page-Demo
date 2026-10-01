@@ -1,4 +1,6 @@
-# Would You Rather? — website + private AI API
+> Start with the [simple GitHub workshop](../README.md). This page is optional. Cloudflare is one example backend provider, not a requirement for the static website. You may connect another HTTPS backend that accepts `{ "message": "..." }` and returns `{ "reply": "..." }`, handles CORS for your site, and keeps the OpenRouter key server-side.
+
+# Optional advanced example: a private AI API
 
 Build a silly question game with a floating chat button or a full-page message view. Participants use browser buttons or GitHub Desktop; no terminal commands.
 
@@ -26,7 +28,7 @@ Use **repository secrets** for this provided workflow. If you choose environment
 ## 3. Deploy the API
 
 1. Open `ai-would-you-rather/api/wrangler.jsonc` → pencil. Replace `https://YOUR-USERNAME.github.io` with your published site's **origin**: scheme and hostname only, no repository path or trailing slash. Commit changes. If an unrelated Worker already uses `ai-club-game` in your account, change `name` to a unique name before deploying.
-2. Open **Actions**. If a fork asks, enable workflows. Choose **Deploy AI bot → Run workflow → main → Run workflow**. Wait for a green result. Later changes in `api/` trigger deployment automatically.
+2. Open **Actions**. If a fork asks, enable workflows. Choose **Deploy AI bot → Run workflow → main → Run workflow**. Wait for a green result. After later API edits, run this workflow again manually. It never runs automatically for the simple workshop.
 3. In Cloudflare **Workers & Pages → ai-club-game**, copy its `https://…workers.dev` URL. GitHub Actions deploys the code and copies the OpenRouter secret into the Worker's private environment. No secret is copied into Pages.
 4. Open `ai-would-you-rather/index.html` → pencil. Find `const API_URL` and replace its placeholder with your Worker URL **plus `/api/chat`**, keeping the quotes. Commit changes. Wait for the Pages publication to finish.
 

@@ -1,11 +1,6 @@
 name: Deploy AI bot
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'ai-would-you-rather/api/**'
-      - '.github/workflows/deploy-bot.yml'
 permissions:
   contents: read
 concurrency:
