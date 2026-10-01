@@ -37,7 +37,7 @@
   <form id="sq-connection" autocomplete="off">
     <label for="sq-key">1. Connect your OpenRouter key</label>
     <input id="sq-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your OpenRouter key here to enable AI">
-    <div class="sq-key-actions"><button type="submit">Use / update key</button><button type="button" id="sq-clear">Clear key / demo</button></div>
+    <div class="sq-key-actions"><button type="submit">Use / update key</button><button type="button" id="sq-clear">Clear key / demo</button><button type="button" id="sq-new">New chat</button></div>
     <p id="sq-key-note"><a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer">Get a key from OpenRouter ↗</a><br>Kept only in this page's memory; refresh clears it. Only use your key on a page whose code you trust.</p>
     <details><summary>How to add or update your key</summary>
       <ol style="font-size:13px;padding-left:20px;line-height:1.6">
@@ -49,9 +49,9 @@
       <p style="font-size:12px">Paste into this live page, <strong>not the HTML code on GitHub</strong>. Published code is public. Each visitor uses their own key and quota. GitHub Secrets cannot be read privately by a static webpage.</p>
     </details>
   </form>
-  <div id="sq-log" role="log" aria-live="polite"><div class="sq-message"><strong>GAME BOT</strong>Give me a theme, like superpowers, food, or campus life. I will give you two choices.</div></div>
+  <div id="sq-log" role="log" aria-live="polite"><div class="sq-message"><strong>GAME BOT</strong>Give me a theme to start a game, or ask me a question. We can keep chatting from there.</div></div>
   <form id="sq-form"><label for="sq-input">Your message</label><input id="sq-input" maxlength="1000" required autocomplete="off" placeholder="Try a theme: food, space, college…"><button id="sq-send">Send</button><p id="sq-status" role="status"></p></form>
-  <p id="sq-privacy">Demo sends no request. With a key, your message goes to OpenRouter and its model provider. Use fictional themes.</p>
+  <p id="sq-privacy">Demo sends no request. With a key, your message goes to OpenRouter and its model provider. Earlier messages are included for context. New chat clears the conversation; refresh clears both conversation and key.</p>
 </section>
 <!-- BOT HTML END -->
 <!-- BOT SCRIPT START: copy this script after the bot HTML -->

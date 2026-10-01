@@ -20,3 +20,5 @@ Built-in chat replies need no key. The homepage links directly to both chat rout
 The existing GitHub **pages build and deployment** workflow publishes pushes. Keep **Settings → Pages → Deploy from a branch → main → /(root)**.
 
 To add a route, create `my-page/index.html` and link to `my-page/` from the homepage. Use `../` to return home from a child page. Keep relative links for GitHub Pages repository paths.
+
+The chatbot keeps conversation context in page memory. Follow-ups are normal chat, not a new game each time. **New chat** clears messages while keeping the session key. Refresh clears both. Prior messages are sent to OpenRouter for context; very long conversations prompt you to start a new chat.
