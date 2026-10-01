@@ -36,3 +36,10 @@ body.sq-full #sq-privacy{grid-column:2;grid-row:4;padding:0 clamp(24px,5vw,90px)
  body.sq-full #sq-form{grid-column:1;grid-row:4;padding:10px 16px 6px;grid-template-columns:minmax(0,1fr) 72px}
  body.sq-full #sq-privacy{grid-column:1;grid-row:5;padding:0 16px 8px}
 }
+/* Readable conversation measure and clear separation between reply blocks. */
+body.sq-full .sq-message{max-width:72ch;width:100%;min-width:0}
+.sq-content{max-width:100%;overflow-wrap:anywhere;white-space:pre-wrap}
+.sq-content p{display:block;white-space:normal;line-height:1.7;margin:0 0 1em}
+.sq-content p:last-child{margin-bottom:0}
+.sq-content li{margin-bottom:.5em}
+.source-guide{margin:45px 0 0;max-width:900px}.source-guide h2{font-size:30px}.source-guide p{font-size:16px;line-height:1.7}.source-guide details{margin:14px 0;border:1px solid #b7d1cb;border-radius:10px;padding:16px;background:white}.source-guide summary{font-weight:bold;cursor:pointer}.source-guide pre{max-height:440px;overflow:auto;white-space:pre;font:13px/1.6 Consolas,monospace;background:#142d32;color:#eaf7f2;padding:20px;border-radius:8px}.copy-source{margin-top:12px;border:0;border-radius:6px;padding:9px 13px;background:#087e80;color:white;cursor:pointer}.copy-source:disabled{opacity:.5;cursor:wait}

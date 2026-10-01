@@ -38,6 +38,7 @@
     e.preventDefault();
     const message=input.value.trim(); if(!message || activeRequest) return;
     if(message.includes('sk-or-') || (apiKey && message.includes(apiKey))){$('sq-status').textContent='Put keys in the password field, not a message.';return;}
+    input.value='';
     addMessage('YOU',message);
     if(apiKey) {
       const controller=new AbortController();activeRequest=controller;
@@ -46,14 +47,15 @@
       try {
         const response=await fetch('https://openrouter.ai/api/v1/chat/completions',{
           method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${apiKey}`},
-          body:JSON.stringify({model:MODEL,messages:[{role:'system',content:'Write a friendly would-you-rather question with two funny choices labeled A and B based on the theme. Keep it under 70 words.'},{role:'user',content:message}],max_tokens:2048,stream:false}),signal:controller.signal
+          body:JSON.stringify({model:MODEL,messages:[{role:'system',content:'Write a friendly would-you-rather question with two funny choices labeled A and B based on the theme. Format your reply as three separate Markdown paragraphs: **A.** followed by the first choice, **B.** followed by the second choice, then Which would you choose, and why? Put a blank line between each paragraph. Keep it under 70 words.'},{role:'user',content:message}],max_tokens:2048,stream:false}),signal:controller.signal
         });
         if(!response.ok) throw new Error(response.status===401?'Key rejected. Paste a new key and click Use / update key.':response.status===429?'Free model busy or quota exhausted. Wait or use demo.':'OpenRouter could not answer. Check your key, model access, and quota.');
         const data=await response.json();const reply=data.choices?.[0]?.message?.content;
         if(typeof reply!=='string'||!reply.trim()) throw new Error('No text returned. Try again later.');
         if(controller.signal.aborted)return;
-        addMessage('AI',reply);input.value='';$('sq-status').textContent='Which would you choose?';
+        addMessage('AI',reply);$('sq-status').textContent='Which would you choose?';
       } catch(error) {
+        if(!input.value) input.value=message;
         if(!controller.signal.aborted) $('sq-status').textContent=error instanceof TypeError?'Connection failed. Try again or use demo.':error.message;
         else if(apiKey) $('sq-status').textContent='Request stopped. Send again when ready.';
       } finally {clearTimeout(timer);activeRequest=null;$('sq-send').disabled=false;}
